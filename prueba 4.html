@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Registro AREY</title>
+  <style>
+    body {
+      background: #f2f2f2;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      width: 90%;
+      max-width: 600px;
+    }
+    h2 {
+      background: #556b2f;
+      color: white;
+      padding: 10px;
+      text-align: center;
+      border-radius: 10px;
+      margin-top: 0;
+    }
+    label, select, input, textarea {
+      display: block;
+      width: 100%;
+      margin-top: 10px;
+    }
+    button {
+      margin-top: 20px;
+      background-color: #d63384;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:disabled {
+      opacity: 0.6;
+    }
+    .hidden {
+      display: none;
+    }
+    .success {
+      text-align: center;
+      color: green;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Registro de Movimiento</h2>
+    <form id="movimientoForm">
+      <label for="tipoMovimiento">Tipo de Movimiento</label>
+      <select id="tipoMovimiento" required>
+        <option value="">Seleccione</option>
+        <option value="ingreso">Ingreso</option>
+        <option value="egreso">Egreso</option>
+      </select>
+
+      <div id="ingresoFields" class="hidden">
+        <label for="tipoIngreso">Tipo de Ingreso</label>
+        <select id="tipoIngreso">
+          <option value="">Seleccione</option>
+          <option>Micropigmentación de cejas</option>
+          <option>Curso de cejas</option>
+          <option>Curso de pestañas</option>
+          <option>Curso de masajes</option>
+          <option>Curso de maquillaje</option>
+          <option>OTROS CURSOS (CUALQUIERA QUE NO ESTE EN ESTA LISTA)</option>
+        </select>
+        <div id="otroIngresoContainer" class="hidden">
+          <label for="otroIngreso">Especifique otro ingreso</label>
+          <input type="text" id="otroIngreso" />
+        </div>
+        <label for="captacion">Forma de Captación</label>
+        <select id="captacion">
+          <option>Cliente habitual</option>
+          <option>Recomendación</option>
+          <option>Publicación pagada</option>
+          <option>Orgánico (redes)</option>
+        </select>
+        <label for="realizadoPor">¿Quién realizó el servicio?</label>
+        <input type="text" id="realizadoPor" />
+        <label for="formaPago">Forma de Pago</label>
+        <select id="formaPago">
+          <option>Efectivo</option>
+          <option>Tarjeta</option>
+          <option>Transferencia</option>
+        </select>
+      </div>
+
+      <div id="egresoFields" class="hidden">
+        <label for="tipoEgreso">Tipo de Egreso</label>
+        <select id="tipoEgreso">
+          <option value="">Seleccione</option>
+          <option>Renta</option>
+          <option>Material</option>
+          <option>Sueldos</option>
+          <option>Publicidad</option>
+          <option>Servicios (luz, agua, internet)</option>
+          <option>OTROS (CUALQUIER EGRESO QUE NO ENTRE EN LA CATEGORÍAS ANTERIORES)</option>
+        </select>
+        <div id="otroEgresoContainer" class="hidden">
+          <label for="otroEgreso">Especifique otro egreso</label>
+          <input type="text" id="otroEgreso" />
+        </div>
+      </div>
+
+      <label for="unidad">Unidad de Negocio</label>
+      <select id="unidad" required>
+        <option>AREY Morelia</option>
+        <option>AREY Capacitación</option>
+        <option>AREY Foráneo</option>
+      </select>
+
+      <label for="registradoPor">¿Quién registró el movimiento?</label>
+      <select id="registradoPor" required>
+        <option>Yera</option>
+        <option>Sara</option>
+        <option>Marlene</option>
+      </select>
+
+      <label for="monto">Monto ($)</label>
+      <input type="number" id="monto" required />
+
+      <label for="observaciones">Observaciones</label>
+      <textarea id="observaciones" rows="3"></textarea>
+
+      <button type="submit" id="submitBtn">Enviar</button>
+      <div id="successMessage" class="success hidden">¡Registro enviado correctamente!</div>
+    </form>
+  </div>
+
+  <script>
+    const tipoMovimiento = document.getElementById('tipoMovimiento');
+    const ingresoFields = document.getElementById('ingresoFields');
+    const egresoFields = document.getElementById('egresoFields');
+    const tipoIngreso = document.getElementById('tipoIngreso');
+    const otroIngresoContainer = document.getElementById('otroIngresoContainer');
+    const tipoEgreso = document.getElementById('tipoEgreso');
+    const otroEgresoContainer = document.getElementById('otroEgresoContainer');
+    const form = document.getElementById('movimientoForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const successMessage = document.getElementById('successMessage');
+
+    tipoMovimiento.addEventListener('change', () => {
+      ingresoFields.classList.add('hidden');
+      egresoFields.classList.add('hidden');
+      if (tipoMovimiento.value === 'ingreso') ingresoFields.classList.remove('hidden');
+      if (tipoMovimiento.value === 'egreso') egresoFields.classList.remove('hidden');
+    });
+
+    tipoIngreso.addEventListener('change', () => {
+      otroIngresoContainer.classList.toggle('hidden', tipoIngreso.value !== 'OTROS CURSOS (CUALQUIERA QUE NO ESTE EN ESTA LISTA)');
+    });
+
+    tipoEgreso.addEventListener('change', () => {
+      otroEgresoContainer.classList.toggle('hidden', tipoEgreso.value !== 'OTROS (CUALQUIER EGRESO QUE NO ENTRE EN LA CATEGORÍAS ANTERIORES)');
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!tipoMovimiento.value || !document.getElementById('unidad').value || !document.getElementById('registradoPor').value || !document.getElementById('monto').value) {
+        alert("Por favor complete todos los campos obligatorios.");
+        return;
+      }
+
+      const data = {
+        tipoMovimiento: tipoMovimiento.value,
+        unidadNegocio: document.getElementById('unidad').value,
+        registradoPor: document.getElementById('registradoPor').value,
+        monto: document.getElementById('monto').value,
+        observaciones: document.getElementById('observaciones').value || ""
+      };
+
+      if (tipoMovimiento.value === 'ingreso') {
+        data.tipoIngreso = tipoIngreso.value;
+        if (tipoIngreso.value === 'OTROS CURSOS (CUALQUIERA QUE NO ESTE EN ESTA LISTA)') {
+          data.otroIngreso = document.getElementById('otroIngreso').value || "";
+        }
+        data.formaCaptacion = document.getElementById('captacion').value || "";
+        data.realizadoPor = document.getElementById('realizadoPor').value || "";
+        data.formaPago = document.getElementById('formaPago').value || "";
+      }
+
+      if (tipoMovimiento.value === 'egreso') {
+        data.tipoEgreso = tipoEgreso.value;
+        if (tipoEgreso.value === 'OTROS (CUALQUIER EGRESO QUE NO ENTRE EN LA CATEGORÍAS ANTERIORES)') {
+          data.otroEgreso = document.getElementById('otroEgreso').value || "";
+        }
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Enviando...';
+
+      fetch('https://script.google.com/macros/s/AKfycbwrq28TVYuSjsUG1z5DkPkphNUez2X_3KJvu55Op_r4kKqtxu8JjvM1ASfCPiMQEqDA/exec', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.result === 'success') {
+          successMessage.classList.remove('hidden');
+          form.reset();
+          ingresoFields.classList.add('hidden');
+          egresoFields.classList.add('hidden');
+          otroIngresoContainer.classList.add('hidden');
+          otroEgresoContainer.classList.add('hidden');
+          setTimeout(() => successMessage.classList.add('hidden'), 3000);
+        } else {
+          alert('Error al guardar: ' + res.message);
+        }
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Enviar';
+      })
+      .catch(err => {
+        alert('Error de red: ' + err.message);
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Enviar';
+      });
+    });
+  </script>
+</body>
+</html>
